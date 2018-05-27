@@ -16,7 +16,14 @@ namespace Creamsicle
         }
         internal static void MainClient(string[] args)
         {
-            Option.ParseArgs(ClientOptions.Options, args);
+            try
+            {
+                Option.ParseArgs(ClientOptions.Options, args);
+            } catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+                return;
+            }
             MainClient(ClientOptions.Host.Value, ClientOptions.Port.Value, ClientOptions.Message.Value);
         }
 

@@ -13,7 +13,15 @@ namespace Creamsicle
         }
         static void Main(string[] args)
         {
-            Option.ParseArgs(MainOptions.Options, args);
+            try
+            {
+                Option.ParseArgs(MainOptions.Options, args);
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+                return;
+            }
             if (MainOptions.AsClient.Value)
             {
                 Client.MainClient(args);
