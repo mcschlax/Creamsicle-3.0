@@ -13,7 +13,6 @@ namespace Creamsicle
         internal dynamic Value { get; private set; }
         internal Type Type { get; }
 
-
         internal Option(string Name, HashSet<string> Aliases, bool IsRequired, string HelpMsg, dynamic Value, Type Type) : this(Name, Aliases, IsRequired, HelpMsg, Type)
         {
             this.Value = Value;

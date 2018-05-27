@@ -34,7 +34,6 @@ namespace Creamsicle
                         msg = Encoding.Unicode.GetString(server.Receive(ref serverEP));
                         Console.WriteLine($"Server Received {msg}");
                     } while (!msg.Equals("stop", StringComparison.OrdinalIgnoreCase));
-
                 }
             }
             catch (Exception e)
