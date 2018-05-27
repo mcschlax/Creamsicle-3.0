@@ -43,7 +43,7 @@ namespace Creamsicle
                 {
                     if (Type == typeof(Int32))
                     {
-                        Int32.TryParse(arg, Value);
+                        Value = Int32.Parse(arg);
                     }
                     else if (Type == typeof(String))
                     {
@@ -53,7 +53,8 @@ namespace Creamsicle
                     {
                         throw new ArgumentException($"Not valid type", arg);
                     }
-                } else
+                }
+                else
                 {
                     throw new ArgumentException($"Not valid arg (Null/WhiteSpace)", arg);
                 }
@@ -76,14 +77,10 @@ namespace Creamsicle
                         }
                         if (found)
                         {
-                            string value = (++i >= args.Length) ? args[i] : String.Empty;
+                            string value = (++i < args.Length) ? args[i] : null;
                             option.ValidateTypeSetValue(value);
                             break;
                         }
-                    }
-                    if (!found)
-                    {
-                        throw new ArgumentException($"Not valid option", args[i]);
                     }
                 }
 
@@ -103,13 +100,16 @@ namespace Creamsicle
             {
                 internal static readonly Option Host = new Option("Host", new HashSet<string> { "-h", "--h", "Host" }, false, "Host name by IP address, defaults to 127.0.0.1", "127.0.0.1", typeof(String));
                 internal static readonly Option Port = new Option("Port", new HashSet<string> { "-p", "--p", "Port" }, true, "Port number", typeof(Int32));
-                internal static readonly HashSet<Option> Options = new HashSet<Option> { Host, Port };
+                internal static readonly Option Message = new Option("Message", new HashSet<string> { "-m", "--m", "Message" }, true, "Message", typeof(String));
+                internal static readonly HashSet<Option> Options = new HashSet<Option> { Host, Port, Message };
             }
             internal static void MainClient(string[] args)
             {
                 Option.ParseArgs(ClientOptions.Options, args);
+                MainClient(ClientOptions.Host.Value, ClientOptions.Port.Value, ClientOptions.Message.Value);
             }
-            internal static void MainClient(string hostname, int port, string message)
+
+            private static void MainClient(string hostname, int port, string message)
             {
                 Console.WriteLine($"Client Connecting to {hostname} on {port}");
                 try
@@ -139,9 +139,10 @@ namespace Creamsicle
             internal static void MainServer(string[] args)
             {
                 Option.ParseArgs(ServerOptions.Options, args);
+                MainServer(ServerOptions.Port.Value);
             }
 
-            internal static int MainServer(int port)
+            private static void MainServer(int port)
             {
                 Console.WriteLine($"Server Binding to {port}");
                 try
@@ -162,21 +163,32 @@ namespace Creamsicle
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
-                    return -1;
+                    return;
                 }
-                return 0;
             }
         }
 
         private static class MainOptions
         {
-            internal static readonly Option AsClient = new Option("AsClient", new HashSet<string>{ "-c", "--c", "Client" }, true, "Run as Client", false, typeof(Boolean));
-            internal static readonly Option AsServer = new Option("AsServer", new HashSet<string>{ "-s", "--s", "Server" }, true, "Run as Server", false, typeof(Boolean));
+            internal static readonly Option AsClient = new Option("AsClient", new HashSet<string> { "-c", "--c", "Client" }, true, "Run as Client", false, typeof(Boolean));
+            internal static readonly Option AsServer = new Option("AsServer", new HashSet<string> { "-s", "--s", "Server" }, true, "Run as Server", false, typeof(Boolean));
             internal static readonly HashSet<Option> Options = new HashSet<Option> { AsClient, AsServer };
         }
         static void Main(string[] args)
         {
             Option.ParseArgs(MainOptions.Options, args);
+            if (MainOptions.AsClient.Value)
+            {
+                Client.MainClient(args);
+            }
+            else if (MainOptions.AsServer.Value)
+            {
+                Server.MainServer(args);
+            }
+            else
+            {
+                Console.WriteLine("Please select -c or -s");
+            }
         }
     }
 }
