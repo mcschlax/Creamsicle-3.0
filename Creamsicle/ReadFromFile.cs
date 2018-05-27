@@ -2,17 +2,19 @@
 {
     class ReadFromFile
     {
-        private static void MainFile(string[] args)
+        internal static string MainFile(string fileName)
         {
             string line;
+            string fileContents = string.Empty;
 
-            System.IO.StreamReader hwinfoLog = new System.IO.StreamReader(@"C:\Users\Glitc\Desktop\logs.csv");
+            System.IO.StreamReader hwinfoLog = new System.IO.StreamReader(fileName);
             while((line = hwinfoLog.ReadLine()) != null)
             {
-                System.Console.WriteLine(line);
+                fileContents += line;
             }
             hwinfoLog.Close();
-            System.Console.ReadLine();
+
+            return fileContents;
         }
     }
 }
