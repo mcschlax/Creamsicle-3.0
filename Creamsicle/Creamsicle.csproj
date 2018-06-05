@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="Option.cs" />
+    <Compile Include="ReadFromFile.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
